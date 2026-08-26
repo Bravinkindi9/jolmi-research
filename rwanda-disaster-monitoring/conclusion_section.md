@@ -1,0 +1,7 @@
+# Conclusion
+
+This study set out to answer a narrower question than "can satellites detect floods in Rwanda" — that question has already been answered, more than once, including for this exact event. Instead, it asked what a simple, entirely free, single-satellite method could achieve on its own, in the steep western terrain that made the May 2023 disaster so severe, and what it would take to close the gaps that method reveals.
+
+The answer, honestly stated: a real, working flood estimate — roughly 69 hectares, with a fair range of uncertainty around it — built from free data and a method any institution could run without specialized tools or training. Alongside that came real limitations: an automatic thresholding shortcut that failed for well-understood statistical reasons, no ability to see flooding in villages or dense vegetation, and no rigorous terrain masking. Each of those gaps now has a number attached to it, rather than a vague sense that "better data would help" — a single targeted commercial scene costs somewhere between $675 and $3,250, and several under-used free or subsidized pathways already exist but aren't currently part of how Rwanda responds to floods.
+
+That, ultimately, is the actual contribution here: not a better flood map, but a clearer, evidence-based picture of exactly where free satellite data is enough, where it isn't, and what closing that specific, remaining gap would realistically cost.
