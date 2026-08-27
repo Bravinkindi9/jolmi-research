@@ -7,13 +7,26 @@ Run this in a Python environment with Earth Engine authenticated
 (e.g. Google Colab, or local Jupyter with `earthengine authenticate` done).
 """
 
+import os
+from pathlib import Path
+
 import ee
 import geemap
 from geemap import cartoee
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-ee.Initialize()
+ee_project = os.environ.get("EE_PROJECT")
+try:
+    if ee_project:
+        ee.Initialize(project=ee_project)
+    else:
+        ee.Initialize()
+except ee.EEException as exc:
+    raise RuntimeError(
+        "Earth Engine could not initialize. Authenticate with `earthengine authenticate` "
+        "and set EE_PROJECT to an eligible Google Cloud project ID."
+    ) from exc
 
 # ----------------------------------------------------------------
 # 1. Define geometries
@@ -37,7 +50,7 @@ target_districts = districts.filter(
 fig = plt.figure(figsize=(16, 6))
 
 # --- Panel 1: Africa with Rwanda highlighted ---
-ax1 = plt.subplot(1, 3, 1, projection=cartoee.crs.PlateCarree())
+ax1 = plt.subplot(1, 3, 1, projection=cartoee.ccrs.PlateCarree())
 africa_region = [-20, -35, 55, 38]  # rough Africa bounding box [W, S, E, N]
 
 # Use a neutral basemap image (blended composite) as backdrop context
@@ -51,7 +64,7 @@ ax1.set_title("Africa — Rwanda highlighted", fontsize=11)
 cartoee.add_gridlines(ax1, interval=[20, 20], linestyle=":")
 
 # --- Panel 2: Rwanda with Western Province / AOI box highlighted ---
-ax2 = plt.subplot(1, 3, 2, projection=cartoee.crs.PlateCarree())
+ax2 = plt.subplot(1, 3, 2, projection=cartoee.ccrs.PlateCarree())
 rwanda_region = [28.8, -2.9, 30.9, -1.0]  # Rwanda bounding box
 
 cartoee.add_layer(ax2, ee.Image().paint(rwanda, 0, 1), region=rwanda_region,
@@ -67,7 +80,7 @@ ax2.set_title("Rwanda — Nyabihu/Ngororero + AOI", fontsize=11)
 cartoee.add_gridlines(ax2, interval=[0.5, 0.5], linestyle=":")
 
 # --- Panel 3: Zoomed AOI with district boundary ---
-ax3 = plt.subplot(1, 3, 3, projection=cartoee.crs.PlateCarree())
+ax3 = plt.subplot(1, 3, 3, projection=cartoee.ccrs.PlateCarree())
 aoi_region = [29.15, -1.80, 29.60, -1.45]
 
 cartoee.add_layer(ax3, ee.Image().paint(target_districts, 0, 2), region=aoi_region,
@@ -100,5 +113,8 @@ fig.text(0.5, -0.08,
          ha='center', fontsize=8, style='italic')
 
 plt.tight_layout()
-plt.savefig('study_area_locator_map.png', dpi=300, bbox_inches='tight')
+output_path = Path(__file__).resolve().parent / 'outputs' / 'study_area_locator_map.png'
+output_path.parent.mkdir(exist_ok=True)
+plt.savefig(output_path, dpi=300, bbox_inches='tight')
+print(f'Saved map to: {output_path}')
 plt.show()
